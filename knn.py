@@ -1,9 +1,6 @@
-import pandas as pd
-import os
-import seaborn as sns
+from sklearn.neighbors import KNeighborsRegressor
 
-from sklearn.model_selection import train_test_split
-from sklearn.neighbors import KNeighborsClassifier
-
-if __name__ == '__main__':
-    ...
+def knn(X_train, y_train, X_test, y_test):
+    knn_model = KNeighborsRegressor(n_neighbors=3)
+    knn_model.fit(X_train, y_train)
+    print(knn_model.score(X_test, y_test))
