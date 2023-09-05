@@ -19,6 +19,9 @@ if __name__ == "__main__":
     # Clean datas
     df["taux_with_indicateur_partis"] = (df["taux"] * df["indicateur_partis"])/100
     df.drop(['taux', 'indicateur_partis'], axis=1, inplace=True)
+
+    df['date_donnees'] = pd.to_datetime(df['date_donnees']).dt.year
+
     df = df.groupby(['code_departement', 'date_donnees']).agg({
         'taux_with_indicateur_partis': 'sum',
         'taux_chomage': 'first',
@@ -30,14 +33,15 @@ if __name__ == "__main__":
 
     print(df.corr(numeric_only=True)['taux_with_indicateur_partis'])
 
-    X_train = df[(df['date_donnees'] > datetime(2007,1,1).date()) & (df['date_donnees'] <= datetime(2017,1,1).date())][['taux_chomage', 'nb_entreprise', 'nb_effraction', 'taux_genre', 'salaire_net_horaire_moyen']]
-    X_test = df[(df['date_donnees'] > datetime(2017,1,1).date()) & (df['date_donnees'] <= datetime(2022,1,1).date())][['taux_chomage', 'nb_entreprise', 'nb_effraction', 'taux_genre', 'salaire_net_horaire_moyen']]
+    X_train = df[(df['date_donnees'] > 2007) & (df['date_donnees'] <= 2017)][['taux_chomage', 'nb_entreprise', 'nb_effraction', 'taux_genre', 'salaire_net_horaire_moyen', 'date_donnees']]
+    X_test = df[(df['date_donnees'] > 2017) & (df['date_donnees'] <= 2022)][['taux_chomage', 'nb_entreprise', 'nb_effraction', 'taux_genre', 'salaire_net_horaire_moyen', 'date_donnees']]
 
-    y_train =  df[(df['date_donnees'] == datetime(2012,1,1).date()) | (df['date_donnees'] == datetime(2017,1,1).date())][['taux_with_indicateur_partis']]
-    y_test = df[(df['date_donnees'] == datetime(2022,1,1).date())][['taux_with_indicateur_partis']]
+    y_train =  df[(df['date_donnees'] == 2012) | (df['date_donnees'] == 2017)][['taux_with_indicateur_partis']]
+    y_test = df[(df['date_donnees'] == 2022)][['taux_with_indicateur_partis']]
 
-    knn(X_train, y_train, X_test, y_test)
+    #knn(X_train, y_train, X_test, y_test)
 
-    decision_tree(X_train, y_train, X_test, y_test)
+    #decision_tree(X_train, y_train, X_test, y_test)
+    
 
     random_forest(X_train, y_train, X_test, y_test)
